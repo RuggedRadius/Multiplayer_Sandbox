@@ -1,6 +1,7 @@
 # Multiplayer_Sandbox
  
  ## Introduction
+ A multiplayer, low-poly, sandbox style game for learning and educational purposes.
  
  ## Features
  * Multiplayer (currently supports 4 players)
@@ -13,5 +14,6 @@
 
  
  ## Screenshots
- 
+ ![](Images/Screenshots/1.png)
+ ![](Images/Screenshots/2.png)
  
