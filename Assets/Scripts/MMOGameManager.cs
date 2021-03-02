@@ -35,7 +35,7 @@ namespace Mirror.Examples.Tanks
                 else
                 {
                     ShowReadyMenu();
-                    UpdateStats();
+                    //UpdateStats();
                 }
             }
             else
@@ -109,14 +109,14 @@ namespace Mirror.Examples.Tanks
                 return;
 
             int alivePlayerCount = 0;
-            foreach (Player tank in players)
+            foreach (Player player in players)
             {
-                if (!tank.isDead)
+                if (!player.isDead)
                 {
                     alivePlayerCount++;
 
                     //If there is only 1 player left alive this will end up being their name
-                    WinnerNameText.text = tank.playerName;
+                    WinnerNameText.text = player.playerName;
                 }
             }
 
@@ -151,18 +151,18 @@ namespace Mirror.Examples.Tanks
         //All players are ready and game has started. Allow players to move.
         void AllowTankMovement()
         {
-            foreach (Player tank in players)
+            foreach (Player player in players)
             {
-                tank.allowMovement = true;
+                player.allowMovement = true;
             }
         }
 
         //Game is over. Prevent movement
         void DisallowTankMovement()
         {
-            foreach (Player tank in players)
+            foreach (Player player in players)
             {
-                tank.allowMovement = false;
+                player.allowMovement = false;
             }
         }
     }

@@ -145,7 +145,9 @@ public class MeshGenerator : MonoBehaviour
                     for (int z = 0; z < size; z++)
                     {
                         int index = (closestIndex + (x - size)) + ((z + 1) + ((z - (size/2)) * zSize));
-                        vertices[index].y += 0.25f;
+                        vertices[index].y += heightIncrement;
+                        float normalisedHeight = Mathf.InverseLerp(minTerrainHeight, maxTerrainHeight, vertices[index].y);
+                        vertexColours[index] = gradient.Evaluate(normalisedHeight);
                     }
                 }
 

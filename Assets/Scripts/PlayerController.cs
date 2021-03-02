@@ -6,55 +6,143 @@ using UnityEngine;
 
 public class PlayerController : NetworkBehaviour
 {
-    public CinemachineVirtualCamera virtualCamera = null;
-
+    [Header("State")]
     public bool sprinting;
+    public bool jumping;
+    public bool isGrounded;
 
+    [Header("Movement Settings")]
     public float movementSpeed;
-
+    public float jumpPower;
     public float rotationMultiplier = 0.6f;
     public float moveBackMultiplier = 0.4f;
     public float sprintMultiplier = 0.4f;
 
-    private Animator anim;
+    [Header("Controller Mappings")]
+    public KeyCode mapJump;
+    public KeyCode mapBuild;
 
-    // Grounding
+    [Header("Grounded Settings")]
+    public float groundedDistance;
     public LayerMask groundOnly;
+    Ray ray;
+
+
+    private Animator anim;
+    private Rigidbody rb;
+    [HideInInspector] public CinemachineVirtualCamera virtualCamera;
 
     private void Awake()
     {
         anim = this.GetComponentInChildren<Animator>();
+        rb = this.GetComponent<Rigidbody>();
         virtualCamera.gameObject.SetActive(true);
+    }
+
+    private void Start()
+    {
+        StartCoroutine(IsGrounded());
     }
 
     void Update()
     {
-
         if (!isLocalPlayer) { return; }
-
-        // Calc rotation vector
-        Vector3 rotVector = this.transform.up * Input.GetAxis("Horizontal") * Time.deltaTime * rotationMultiplier * 250f;
-        this.transform.eulerAngles += rotVector;
 
         // Sprint
         sprinting = Input.GetKey(KeyCode.LeftShift);
 
-        Vector3 movement = Vector3.zero;
-        movement = this.transform.forward * Time.deltaTime * movementSpeed * Input.GetAxis("Vertical");
-        movement = sprinting ? movement * sprintMultiplier : movement;
-        this.transform.position += movement;
-
         // Animator
         UpdateAnimator();
+    }
 
-        // Stick player to terrain
-        StickToTerrain();
+    private void LateUpdate()
+    {
+        if (!isLocalPlayer) { return; }
+
+        // Apply movement and rotation vectors
+        this.transform.eulerAngles += CalculateRotationVector();
+        this.transform.position += CalculateMovementVector();
+
+        if (!jumping)
+        {
+            // Jump
+            if (Input.GetKeyDown(mapJump))
+            {
+                jumping = true;
+                isGrounded = false;
+                StartCoroutine(jump());
+            }
+
+            // Stick to terrain otherwise
+            if (!isGrounded)
+            {
+                StickToTerrain();
+            }
+        }
+    }
+
+    
+
+    private IEnumerator IsGrounded()
+    {
+        RaycastHit hit;
+        Vector3 originOffset = Vector3.up * 0.01f;
+
+        while (true)
+        {
+            ray = new Ray(this.transform.position + originOffset, -this.transform.up);
+
+            if (Physics.Raycast(ray.origin, ray.direction, out hit, groundedDistance, groundOnly, QueryTriggerInteraction.Ignore))
+            {
+                isGrounded = true;
+            }
+            else
+            {
+                isGrounded = false;
+            }
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator jump()
+    {
+        Debug.Log("Jump");
+
+        rb.velocity += CalculateJumpVector();        
+
+        anim.SetTrigger("Jump");
+
+        while (!isGrounded)
+        {
+            yield return null;
+        }
+
+        jumping = false;
+        yield return null;
+    }
+
+    private Vector3 CalculateJumpVector()
+    {
+        return Vector3.up * Time.deltaTime * jumpPower;
+    }
+
+    private Vector3 CalculateMovementVector()
+    {
+        Vector3 movement = this.transform.forward * Time.deltaTime * movementSpeed * Input.GetAxis("Vertical");
+        return sprinting ? movement * sprintMultiplier : movement;
+    }
+
+    private Vector3 CalculateRotationVector()
+    {
+        return this.transform.up * Input.GetAxis("Horizontal") * Time.deltaTime * rotationMultiplier * 250f;
     }
 
     private void UpdateAnimator()
     {
         anim.SetFloat("Vertical", Input.GetAxis("Vertical"));
         anim.SetBool("Sprinting", sprinting);
+        anim.SetBool("Grounded", isGrounded);
     }
 
     private void StickToTerrain()
@@ -70,5 +158,10 @@ public class PlayerController : NetworkBehaviour
         {
             Debug.LogWarning("Could not find terrain to stick player to!");
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Debug.DrawRay(ray.origin, ray.direction * groundedDistance, Color.red);
     }
 }

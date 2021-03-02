@@ -561,7 +561,8 @@ namespace Mirror
                 authenticator.OnClientAuthenticated.AddListener(OnClientAuthenticated);
             }
 
-            networkAddress = "localhost";
+            networkAddress = "139.216.63.221"; 
+            //networkAddress = "localhost"; // TEMP COMMENTED OUT
             NetworkServer.ActivateHostScene();
             RegisterClientMessages();
 
