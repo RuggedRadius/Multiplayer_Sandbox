@@ -6,9 +6,12 @@ namespace Mirror.Examples.Tanks
 {
     public class MMOGameManager : MonoBehaviour
     {
-        public int MinimumPlayersForGame = 1;
+        public static MMOGameManager singleton;
+
+        public int MinimumPlayersForGame = 0;
 
         public Player LocalPlayer;
+        public GameObject MainMenuSprite;
         public GameObject StartPanel;
         public GameObject GameOverPanel;
         public GameObject HealthTextLabel;
@@ -20,6 +23,15 @@ namespace Mirror.Examples.Tanks
         public bool IsGameReady;
         public bool IsGameOver;
         public List<Player> players = new List<Player>();
+
+        private void Awake()
+        {
+            if (singleton == null)
+                singleton = this;
+
+            if (singleton != null && singleton != this)
+                Destroy(this.gameObject);
+        }
 
         void Update()
         {
@@ -78,20 +90,20 @@ namespace Mirror.Examples.Tanks
                 if (players.Count >= MinimumPlayersForGame)
                 {
                     bool AllReady = true;
-                    foreach (Player tank in players)
+                    foreach (Player player in players)
                     {
-                        if (!tank.isReady)
+                        if (!player.isReady)
                         {
                             AllReady = false;
                         }
                     }
                     if (AllReady)
                     {
-                        IsGameReady = true;
+                        IsGameReady = true;                        
                         AllowTankMovement();
 
                         //Update Local GUI:
-                        StartPanel.SetActive(false);
+                        StartPanel.SetActive(false);                        
                         HealthTextLabel.SetActive(true);
                         ScoreTextLabel.SetActive(true);
                     }
@@ -101,6 +113,9 @@ namespace Mirror.Examples.Tanks
 
         void GameOverCheck()
         {
+            //if (MainMenuSprite.activeSelf)
+            //    MainMenuSprite.SetActive(false);
+
             if (!IsGameReady)
                 return;
 
