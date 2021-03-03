@@ -7,7 +7,7 @@ using Cinemachine;
 public class PlayerCameraController : NetworkBehaviour
 {
     [Header("Camera")]
-    [SerializeField] private Transform playerTransform = null;
+    //[SerializeField] private Transform playerTransform = null;
     [SerializeField] private CinemachineVirtualCamera virtualCamera = null;
 
     private CinemachineTransposer transposer;

@@ -33,6 +33,13 @@ namespace Mirror.Examples.Tanks
                 Destroy(this.gameObject);
         }
 
+        private void Start()
+        {
+            MapGenerator mapGen = FindObjectOfType<MapGenerator>();
+            mapGen.seed = Random.Range(int.MinValue, int.MaxValue);
+            mapGen.GenerateMap();
+        }
+
         void Update()
         {
             if (NetworkManager.singleton.isNetworkActive)

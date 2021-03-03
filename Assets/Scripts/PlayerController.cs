@@ -42,6 +42,7 @@ public class PlayerController : NetworkBehaviour
     private void Start()
     {
         StartCoroutine(IsGrounded());
+        Debug.Log("GroundOnly == " + groundOnly.value);
     }
 
     void Update()
@@ -73,11 +74,11 @@ public class PlayerController : NetworkBehaviour
                 StartCoroutine(jump());
             }
 
-            // Stick to terrain otherwise
-            if (!isGrounded)
-            {
-                StickToTerrain();
-            }
+            //// Stick to terrain otherwise
+            //if (!isGrounded)
+            //{
+            //    StickToTerrain();
+            //}
         }
     }
 

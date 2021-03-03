@@ -13,6 +13,21 @@ namespace Mirror
     {
         public void Awake()
         {
+            RaycastHit hit;
+            Ray ray = new Ray(this.transform.position + (Vector3.up * 100), -this.transform.up);
+            LayerMask layer = 1024;
+            float distance = 1000f;
+            float startingHeight = 10f;
+
+            if (Physics.Raycast(ray.origin, ray.direction, out hit, distance, layer, QueryTriggerInteraction.Ignore))
+            {
+                this.transform.position = new Vector3(hit.point.x, hit.point.y + startingHeight, hit.point.z);
+            }
+            else
+            {
+                Debug.LogWarning("No ground position found for network starting position");
+            }
+
             NetworkManager.RegisterStartPosition(transform);
         }
 

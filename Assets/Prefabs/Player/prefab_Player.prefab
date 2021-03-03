@@ -299,7 +299,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  playerTransform: {fileID: 0}
   virtualCamera: {fileID: 4127445263256722917}
 --- !u!1 &4270007306938998263
 GameObject:
