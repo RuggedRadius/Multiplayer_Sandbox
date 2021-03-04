@@ -273,7 +273,7 @@ MonoBehaviour:
   sprinting: 0
   jumping: 0
   isGrounded: 0
-  movementSpeed: 10
+  movementSpeed: 4.2
   jumpPower: 5000
   rotationMultiplier: 0.6
   moveBackMultiplier: 0.4

@@ -24,6 +24,8 @@ namespace Mirror.Examples.Tanks
         public bool IsGameOver;
         public List<Player> players = new List<Player>();
 
+        public WorldFiller worldFiller;
+
         private void Awake()
         {
             if (singleton == null)
@@ -38,10 +40,21 @@ namespace Mirror.Examples.Tanks
             MapGenerator mapGen = FindObjectOfType<MapGenerator>();
             mapGen.seed = Random.Range(int.MinValue, int.MaxValue);
             mapGen.GenerateMap();
+
+            //StartCoroutine(worldFiller.FillWorld());
         }
 
         void Update()
         {
+
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                Debug.Log("Filling world test");
+                worldFiller.Fill();
+            }
+
+
+
             if (NetworkManager.singleton.isNetworkActive)
             {
                 GameReadyCheck();
